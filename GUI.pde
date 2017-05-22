@@ -518,8 +518,9 @@ void encode_button() {
     curFrame = 0;
     while (curFrame<filenames.length) {
       img = loadImage(foldername+File.separator+filenames[curFrame]);
-      result = encode(img, foldername+File.separator+"glic"+File.separator+filenames[curFrame]+".glic"); // todo: make filename without extension
+      result = encode(img, foldername+File.separator+"glic"+File.separator+filenames[curFrame].replace(".png","").replace(".jpg","").replace(".jpeg","").replace(".bmp","")+".glic"); // todo: make filename without extension
       current = result;
+      curFrame++;
     }
   }
   bbar_reset("Result");
@@ -538,7 +539,7 @@ void decode_button() {
     curFrame = 0;
     while (curFrame<filenames.length) {
       result = decode(foldername+File.separator+filenames[curFrame]);
-      result.save(foldername+File.separator+filenames[curFrame]+".png");
+      result.save(foldername+File.separator+filenames[curFrame].replace(".glic","")+".png");
       current = result;
     }
   }
