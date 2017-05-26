@@ -142,7 +142,7 @@ PImage encode(PImage img, String fname) {
       Compressor comp = ccfg.transform_compress[p] > 0 ? new CompressorMagnitude(trans_compression_value(ccfg.transform_compress[p])) : null;
 
       println("Wavelet for plane " + p + " -> " + (wavelet==null?"NONE":wavelet.getName()));
-      println("Transformation for plane " + p + " -> " + (wavelet==null?"NONE":trans.getName()));
+      println("Transformation for plane " + p + " -> " + (trans==null?"NONE":trans.getName()));
 
       println("Prediction for plane " + p + " -> " + predict_name(ccfg.prediction_method[p]));
 
@@ -316,7 +316,7 @@ PImage decode(String fname) {
       WaveletTransform trans = wavelet == null ? null : createTransform(gcr.transform_type[p], wavelet);
 
       println("Wavelet for plane " + p + " -> " + (wavelet==null?"NONE":wavelet.getName()));
-      println("Transformation for plane " + p + " -> " + (wavelet==null?"NONE":trans.getName()));
+      println("Transformation for plane " + p + " -> " + (trans==null?"NONE":trans.getName()));
 
       println("Prediction for plane " + p + " -> " + predict_name(gcr.prediction_method[p]));
 
@@ -470,7 +470,6 @@ class GlicCodecReader {
   }
 
   void readData(int method, Planes p, int pno, ArrayList<Segment> s) throws IOException { 
-    int idx = 0;
     try {
       switch (method) {
       case ENCODING_PACKED:
@@ -860,4 +859,3 @@ class GlicCodecWriter {
     println(data_sizes);
   }
 }
-

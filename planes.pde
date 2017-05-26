@@ -162,7 +162,7 @@ class Planes {
     for (int x=0; x<s.size; x++) {
       for (int y=0; y<s.size; y++) {
   //     set(pno, x+s.x, y+s.y, clamp(method,round((float)values[x][y])));
-       set(pno, x+s.x, y+s.y, round((float)(values[x][y]*255.0)));
+       set(pno, x+s.x, y+s.y, clamp(method,round((float)(values[x][y]*255.0))));
       }
     }
   }
@@ -185,4 +185,3 @@ class Planes {
     }
   }
 }
-

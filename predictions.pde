@@ -435,8 +435,6 @@ PVector getAngleRef(int i, int x, int y, float a, int w) {
 
 int[][] findBestAngle(Planes p, int pno, Segment s) {
   float stepa = 1.0/min(16, s.size);
-  float besta = -1;
-  int besti = -1;
   int[][] currres = null;
   int currsad = MAX_INT;
 
@@ -482,4 +480,3 @@ int[][] pred_angle(Planes p, int pno, Segment s) {
     return res;
   }
 }
-
