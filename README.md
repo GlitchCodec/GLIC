@@ -1,0 +1,2 @@
+# GLIC
+Glitch Image Codec
