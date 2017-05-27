@@ -602,16 +602,18 @@ class GlicCodecReader {
       encoding_method[p] = o.readUnsignedByte();
 
       if (do_skip_header) {
-        prediction_method[p] = ccfg.prediction_method[p];
-        quant_value[p] = ccfg.quantization_value[p];
-        clamp_method[p] = ccfg.clamp_method[p];
+        println(separate_channels_toggle);
+        int pp = separate_channels_toggle ? p : 0;
+        prediction_method[p] = ccfg.prediction_method[pp];
+        quant_value[p] = ccfg.quantization_value[pp];
+        clamp_method[p] = ccfg.clamp_method[pp];
 
-        transform_method[p] = ccfg.transform_method[p];
+        transform_method[p] = ccfg.transform_method[pp];
         transform_type[p] = ccfg.transform_type[p];
 
-        transform_scale[p] = ccfg.transform_scale[p];
+        transform_scale[p] = ccfg.transform_scale[pp];
 
-        encoding_method[p] = ccfg.encoding_method[p];
+        encoding_method[p] = ccfg.encoding_method[pp];
       }
 
       skip(32-4-6-4);
