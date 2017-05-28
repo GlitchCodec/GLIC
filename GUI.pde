@@ -89,86 +89,86 @@ void gui() {
 
   lbutton = cp5.addButton("load_button")
     .setPosition(10, 220)
-      .setSize(180, 30)
+      .setSize(180, 20)
         .setLabel("LOAD IMAGE (l)")
           .moveTo(global);
 
   ebutton = cp5.addButton("encode_button")
-    .setPosition(10, 260)
-      .setSize(180, 30)
+    .setPosition(10, 250)
+      .setSize(180, 20)
         .setLabel("ENCODE (e)")
           .moveTo(global);
 
   skip_header = cp5.addCheckBox("skip_header")
-    .setPosition(10, 300)
+    .setPosition(10, 280)
       .addItem("Use config during decoding (skip header)", 1)
         .deactivate(0)
           .moveTo(global);
 
   dbutton = cp5.addButton("decode_button")
-    .setPosition(10, 310)
-      .setSize(180, 30)
+    .setPosition(10, 290)
+      .setSize(180, 20)
         .setLabel("DECODE (d)")
           .moveTo(global);
 
   cp5.addButton("save_button")
-    .setPosition(10, 350)
-      .setSize(180, 30)
+    .setPosition(10, 320)
+      .setSize(180, 20)
         .setLabel("SAVE RESULT (SPACE)")
           .moveTo(global);
 
   save_filename = cp5.addTextfield("Save filename")
-    .setPosition(10, 390)
+    .setPosition(10, 350)
       .setWidth(180)
         .setAutoClear(false)
           .moveTo(global);
 
   glic_filename = cp5.addTextfield("GLIC filename")
-    .setPosition(10, 430)
+    .setPosition(10, 390)
       .setWidth(180)
         .setAutoClear(false)
           .moveTo(global);
 
   bbar = cp5.addButtonBar("image_switch")
-    .setPosition(10, 480)
+    .setPosition(10, 440)
       .setWidth(180)
         .addItems(bbar_names)
           .moveTo(global);
 
   cp5.addButton("reset_image")
-    .setPosition(10, 510)
-      .setWidth(80)
+    .setPosition(10, 460)
+      .setWidth(89)
         .setLabel("RESET IMAGE")
           .moveTo(global);
 
   cp5.addButton("keep_image")
-    .setPosition(110, 510)
-      .setWidth(80)
+    .setPosition(101, 460)
+      .setWidth(89)
         .setLabel("KEEP IMAGE")
           .moveTo(global);
 
   cp5.addLabel("presets_label")
     .setText("Presets")
-      .setPosition(10, 540)
+      .setPosition(10, 490)
         .moveTo(global);
 
   presets_list = cp5.addScrollableList("presets")
     .setType(ScrollableList.LIST)
-      .setPosition(10, 550)
+      .setPosition(10, 500)
         .setSize(180, 120)
           .moveTo(global);
 
   updatePresets();
 
   preset_name = cp5.addTextfield("Preset name")
-    .setPosition(10, 680)
+    .setPosition(10, 630)
       .setWidth(180)
         .setAutoClear(false)
           .moveTo(global);  
 
   cp5.addButton("save_preset")
-    .setPosition(10, 720)
-      .setSize(180, 30)
+    .setPosition(10, 670)
+      .setSize(180, 20)
         .setLabel("SAVE PRESET")
           .moveTo(global);
 

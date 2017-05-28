@@ -30,7 +30,7 @@ String foldername = "."+File.separator;
 String session_id;
 
 ////// size of windows
-final static int max_display_size = 800;
+final static int max_display_size = 700;
 
 //////
 PImage orig, img, result, isegm, ipred;
@@ -40,7 +40,7 @@ int neww, newh, posx=0, posy=0;
 PGraphics buffer;
 
 void setup() {
-  size(800,800);
+  size(700,700);
   smooth(8);
   frameRate(20);
   
