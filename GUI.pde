@@ -461,10 +461,10 @@ HashMap<String, Object> toHashMap() {
 }
 
 void fromHashMap(HashMap<String, Object> m) {
-  sl_cs.setValue((float)m.get("colorspace"));
-  co_r.setValue((float)m.get("color_outside_r"));
-  co_g.setValue((float)m.get("color_outside_g"));
-  co_b.setValue((float)m.get("color_outside_b"));
+  sl_cs.setValue((Float)m.get("colorspace"));
+  co_r.setValue((Float)m.get("color_outside_r"));
+  co_g.setValue((Float)m.get("color_outside_g"));
+  co_b.setValue((Float)m.get("color_outside_b"));
 
   for (int p=0; p<3; p++) {
     HashMap<String, ControllerInterface> map = chmap[p];
@@ -474,7 +474,7 @@ void fromHashMap(HashMap<String, Object> m) {
       if (map.get(k) instanceof RadioButton) {
         map.get(k).setArrayValue((float[])m.get(ch+k));
       } else {
-        map.get(k).setValue((float)m.get(ch+k));
+        map.get(k).setValue((Float)m.get(ch+k));
       }
     }
   }
