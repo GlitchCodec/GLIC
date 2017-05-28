@@ -401,7 +401,7 @@ void save_preset() {
 
 void updatePresets() {
   String[] filenames;
-  java.io.File folder = new java.io.File(sketchPath()+File.separator+"presets");
+  java.io.File folder = new java.io.File(sketchPath("presets"));
   filenames = folder.list();
   if(filenames != null) {
     presets_list.clear();
