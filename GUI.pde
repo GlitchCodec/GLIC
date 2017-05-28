@@ -1,4 +1,6 @@
 import controlP5.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 ControlP5 cp5;
 
@@ -23,6 +25,8 @@ HashMap<String, ControllerInterface>[] chmap = new HashMap[3];
 
 boolean separate_channels_toggle = false;
 
+SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+
 void gui() {
   cp5 = new ControlP5(this);
 
@@ -34,47 +38,47 @@ void gui() {
 
   cp5.addLabel("color_outside_label")
     .setText("Color outside")
-      .setPosition(10, 150)
-        .moveTo(global);
+    .setPosition(10, 150)
+    .moveTo(global);
 
   co_r = cp5.addSlider("R")
     .setPosition(10, 160)
-      .setWidth(170)
-        .setRange(0, 255)
-          .setValue(128)
-            .moveTo(global);
+    .setWidth(170)
+    .setRange(0, 255)
+    .setValue(128)
+    .moveTo(global);
 
   co_g = cp5.addSlider("G")
     .setPosition(10, 170)
-      .setWidth(170)
-        .setRange(0, 255)
-          .setValue(128)
-            .moveTo(global);
+    .setWidth(170)
+    .setRange(0, 255)
+    .setValue(128)
+    .moveTo(global);
 
   co_b = cp5.addSlider("B")
     .setPosition(10, 180)
-      .setWidth(170)
-        .setRange(0, 255)
-          .setValue(128)
-            .moveTo(global);
+    .setWidth(170)
+    .setRange(0, 255)
+    .setValue(128)
+    .moveTo(global);
 
   separate_channels = cp5.addCheckBox("separate_channels")
     .setPosition(10, 200)
-      .addItem("Separate channels", 1)
-        .deactivate(0)
-          .moveTo(global);
+    .addItem("Separate channels", 1)
+    .deactivate(0)
+    .moveTo(global);
 
   batch = cp5.addCheckBox("batch")
     .setPosition(110, 200)
-      .addItem("Batch run", 1)
-        .deactivate(0)
-          .moveTo(global);
+    .addItem("Batch run", 1)
+    .deactivate(0)
+    .moveTo(global);
 
   sl_cs = cp5.addScrollableList("Color space")
     .setType(ScrollableList.LIST)
-      .setPosition(10, 20)
-        .setSize(180, 120)
-          .moveTo(global);
+    .setPosition(10, 20)
+    .setSize(180, 120)
+    .moveTo(global);
 
   for (int i=0; i<COLORSPACES; i++) {
     sl_cs.addItem(getColorspaceName(i), i);
@@ -85,64 +89,64 @@ void gui() {
 
   lbutton = cp5.addButton("load_button")
     .setPosition(10, 220)
-      .setSize(180, 30)
-        .setLabel("LOAD IMAGE (l)")
-          .moveTo(global);
+    .setSize(180, 30)
+    .setLabel("LOAD IMAGE (l)")
+    .moveTo(global);
 
   ebutton = cp5.addButton("encode_button")
     .setPosition(10, 260)
-      .setSize(180, 30)
-        .setLabel("ENCODE (e)")
-          .moveTo(global);
+    .setSize(180, 30)
+    .setLabel("ENCODE (e)")
+    .moveTo(global);
 
   skip_header = cp5.addCheckBox("skip_header")
     .setPosition(10, 300)
-      .addItem("Use config during decoding (skip header)", 1)
-        .deactivate(0)
-          .moveTo(global);
+    .addItem("Use config during decoding (skip header)", 1)
+    .deactivate(0)
+    .moveTo(global);
 
   dbutton = cp5.addButton("decode_button")
     .setPosition(10, 310)
-      .setSize(180, 30)
-        .setLabel("DECODE (d)")
-          .moveTo(global);
+    .setSize(180, 30)
+    .setLabel("DECODE (d)")
+    .moveTo(global);
 
   cp5.addButton("save_button")
     .setPosition(10, 350)
-      .setSize(180, 30)
-        .setLabel("SAVE RESULT (SPACE)")
-          .moveTo(global);
+    .setSize(180, 30)
+    .setLabel("SAVE RESULT (SPACE)")
+    .moveTo(global);
 
   save_filename = cp5.addTextfield("Save filename")
     .setPosition(10, 390)
-      .setWidth(180)
-        .setAutoClear(false)
-          .moveTo(global);
+    .setWidth(180)
+    .setAutoClear(false)
+    .moveTo(global);
 
   glic_filename = cp5.addTextfield("GLIC filename")
     .setPosition(10, 430)
-      .setWidth(180)
-        .setAutoClear(false)
-          .moveTo(global);
+    .setWidth(180)
+    .setAutoClear(false)
+    .moveTo(global);
 
   bbar = cp5.addButtonBar("image_switch")
     .setPosition(10, 480)
-      .setWidth(180)
-        .addItems(bbar_names)
-          .moveTo(global);
+    .setWidth(180)
+    .addItems(bbar_names)
+    .moveTo(global);
 
 
   cp5.addButton("reset_image")
     .setPosition(10, 510)
-      .setWidth(80)
-        .setLabel("RESET IMAGE")
-          .moveTo(global);
+    .setWidth(80)
+    .setLabel("RESET IMAGE")
+    .moveTo(global);
 
   cp5.addButton("keep_image")
     .setPosition(110, 510)
-      .setWidth(80)
-        .setLabel("KEEP IMAGE")
-          .moveTo(global);
+    .setWidth(80)
+    .setLabel("KEEP IMAGE")
+    .moveTo(global);
 
   chmap[0] = addToTab(ch1);
   chmap[1] = addToTab(ch2);
@@ -161,49 +165,49 @@ HashMap<String, ControllerInterface> addToTab(Tab t) {
 
   cp5.addLabel(t.getName() + "segmentation_label")
     .setText("Segmentation, min/max are powers of 2")
-      .setPosition(10, 20)
-        .moveTo(t);
+    .setPosition(10, 20)
+    .moveTo(t);
 
   Slider mn_blocksize = cp5.addSlider(t.getName() + "min")
     .setLabel("MIN")
-      .setPosition(10, 30)
-        .setWidth(160)
-          .setRange(1, 9)
-            .setNumberOfTickMarks(9)
-              .showTickMarks(false)
-                .setValue(2)
-                  .moveTo(t);  
+    .setPosition(10, 30)
+    .setWidth(160)
+    .setRange(1, 9)
+    .setNumberOfTickMarks(9)
+    .showTickMarks(false)
+    .setValue(2)
+    .moveTo(t);  
 
   h.put("min", mn_blocksize);
 
   Slider mx_blocksize = cp5.addSlider(t.getName() + "max")
     .setLabel("MAX")
-      .setPosition(10, 40)
-        .setWidth(160)
-          .setRange(1, 9)
-            .setNumberOfTickMarks(9)
-              .showTickMarks(false)
-                .setValue(8)
-                  .moveTo(t);
+    .setPosition(10, 40)
+    .setWidth(160)
+    .setRange(1, 9)
+    .setNumberOfTickMarks(9)
+    .showTickMarks(false)
+    .setValue(8)
+    .moveTo(t);
 
   h.put("max", mx_blocksize);
 
   Slider thr_block = cp5.addSlider(t.getName() + "thr")
     .setLabel("THR")
-      .setPosition(10, 50)
-        .setWidth(160)
-          .setRange(5, 250)
-            .setValue(15)
-              .moveTo(t);
+    .setPosition(10, 50)
+    .setWidth(160)
+    .setRange(5, 250)
+    .setValue(15)
+    .moveTo(t);
 
   h.put("thr", thr_block);
 
   ScrollableList pred = cp5.addScrollableList(t.getName() + "pred")
     .setLabel("Predictions")
-      .setType(ScrollableList.LIST)
-        .setPosition(10, 70)
-          .setSize(180, 120)
-            .moveTo(t);
+    .setType(ScrollableList.LIST)
+    .setPosition(10, 70)
+    .setSize(180, 120)
+    .moveTo(t);
 
   h.put("pred", pred);
 
@@ -219,25 +223,25 @@ HashMap<String, ControllerInterface> addToTab(Tab t) {
 
   cp5.addLabel(t.getName()+"quantization_label")
     .setText("Quantization value")
-      .setPosition(10, 200)
-        .moveTo(t);
+    .setPosition(10, 200)
+    .moveTo(t);
 
   Slider quant = cp5.addSlider(t.getName() + "quant")
     .setLabel("")
-      .setPosition(10, 210)
-        .setWidth(180)
-          .setRange(0, 255)
-            .setValue(0)
-              .moveTo(t);
+    .setPosition(10, 210)
+    .setWidth(180)
+    .setRange(0, 255)
+    .setValue(0)
+    .moveTo(t);
 
   h.put("quant", quant);
 
   RadioButton clamp = cp5.addRadioButton(t.getName() + "clamp")
     .setPosition(10, 230)
-      .addItem(t.getName() + "CLAMP_NONE", CLAMP_NONE)
-        .addItem(t.getName() + "CLAMP_MOD256", CLAMP_MOD256)
-          .activate(0)
-            .moveTo(t);
+    .addItem(t.getName() + "CLAMP_NONE", CLAMP_NONE)
+    .addItem(t.getName() + "CLAMP_MOD256", CLAMP_MOD256)
+    .activate(0)
+    .moveTo(t);
 
   clamp.getItem(0).setLabel("CLAMP_NONE");
   clamp.getItem(1).setLabel("CLAMP_MOD256");
@@ -246,10 +250,10 @@ HashMap<String, ControllerInterface> addToTab(Tab t) {
 
   ScrollableList trans = cp5.addScrollableList(t.getName() + "trans")
     .setLabel("Transformations")
-      .setType(ScrollableList.LIST)
-        .setPosition(10, 260)
-          .setSize(180, 120)
-            .moveTo(t);
+    .setType(ScrollableList.LIST)
+    .setPosition(10, 260)
+    .setSize(180, 120)
+    .moveTo(t);
 
   h.put("trans", trans);
 
@@ -264,41 +268,41 @@ HashMap<String, ControllerInterface> addToTab(Tab t) {
 
   cp5.addLabel(t.getName() + "compression_label")
     .setText("Compression")
-      .setPosition(10, 390)
-        .moveTo(t);
+    .setPosition(10, 390)
+    .moveTo(t);
 
   Slider compress = cp5.addSlider(t.getName() + "compress")
     .setLabel("")
-      .setPosition(10, 400)
-        .setWidth(180)
-          .setRange(0, 255)
-            .setValue(0)
-              .moveTo(t);
+    .setPosition(10, 400)
+    .setWidth(180)
+    .setRange(0, 255)
+    .setValue(0)
+    .moveTo(t);
 
   h.put("compress", compress);
 
   cp5.addLabel(t.getName() + "scaler_label")
     .setText("Scale transformation (2^x)")
-      .setPosition(10, 420)
-        .moveTo(t);
+    .setPosition(10, 420)
+    .moveTo(t);
 
   Slider scaler = cp5.addSlider(t.getName() + "scale")
     .setLabel("")
-      .setPosition(10, 430)
-        .setWidth(180)
-          .setRange(2, 24)
-            .setValue(20)
-              .moveTo(t);
+    .setPosition(10, 430)
+    .setWidth(180)
+    .setRange(2, 24)
+    .setValue(20)
+    .moveTo(t);
 
   h.put("scale", scaler);
 
   RadioButton ttype = cp5.addRadioButton(t.getName() + "ttype")
     .setPosition(10, 450)
-      .addItem(t.getName()+"TRANSTYPE_FWT", TRANSTYPE_FWT)
-        .addItem(t.getName()+"TRANSTYPE_WPT", TRANSTYPE_WPT)
-          .addItem(t.getName()+"TRANSTYPE_RANDOM", -1)
-            .activate(0)
-              .moveTo(t);
+    .addItem(t.getName()+"TRANSTYPE_FWT", TRANSTYPE_FWT)
+    .addItem(t.getName()+"TRANSTYPE_WPT", TRANSTYPE_WPT)
+    .addItem(t.getName()+"TRANSTYPE_RANDOM", -1)
+    .activate(0)
+    .moveTo(t);
 
   ttype.getItem(0).setLabel("TRANSTYPE_FWT");
   ttype.getItem(1).setLabel("TRANSTYPE_WPT");
@@ -308,10 +312,10 @@ HashMap<String, ControllerInterface> addToTab(Tab t) {
 
   ScrollableList encoding = cp5.addScrollableList(t.getName() + "encoding")
     .setLabel("Final encoding")
-      .setType(ScrollableList.LIST)
-        .setPosition(10, 490)
-          .setSize(180, 100)
-            .moveTo(t);
+    .setType(ScrollableList.LIST)
+    .setPosition(10, 490)
+    .setSize(180, 100)
+    .moveTo(t);
 
   h.put("encoding", encoding);
 
@@ -367,6 +371,7 @@ void readValues() {
 }
 
 void reset_image() {
+  new_session();
   img = current = orig;
   ipred = isegm = null;
 }
@@ -418,12 +423,12 @@ void decode_button() {
 
 void save_button() {
   if (buffer != null) {
-    println(foldername+File.separator+save_filename.getText());
-    buffer.save(foldername+File.separator+save_filename.getText());
+    String fn = foldername+File.separator+filename+"_"+session_id+File.separator+save_filename.getText();
+    println(fn);
+    buffer.save(fn);
     save_filename.setText(get_next_filename());
   }
 }
-
 
 int filename_cnt = 0;
 String get_next_filename() {
@@ -440,6 +445,14 @@ void bbar_reset(String h) {
   }
 }
 
+void new_session() {
+  filename_cnt = 0;
+  session_id = hex(sdf.format(new Date()).hashCode());
+  println("Session name: " + session_id);
+  save_filename.setText(get_next_filename());
+  glic_filename.setText(filename+"_"+session_id+".glic");
+}
+
 void fileSelected(File selection) {
   if (selection != null) {
     current = null;
@@ -450,7 +463,6 @@ void fileSelected(File selection) {
     filename = fn.substring(0, i);
     foldername = selection.getParent();
 
-    String newglic = "";
     if ("jpg".equals(fileext)
       || "jpeg".equals(fileext)
       || "gif".equals(fileext)
@@ -459,7 +471,6 @@ void fileSelected(File selection) {
       bbar_reset("Image");
     } else {
       orig = result = img = decode(selection.getAbsolutePath());
-      newglic = "_0";
       bbar_reset("Result");
     }
 
@@ -470,9 +481,7 @@ void fileSelected(File selection) {
     posy = ratio < 1.0 ? 0 : (max_display_size-newh) / 2;
     buffer = createGraphics(img.width, img.height);
 
-    filename_cnt = 0;
-    save_filename.setText(get_next_filename());
-    glic_filename.setText(filename+newglic+".glic");
+    new_session();
 
     current = img;
   }
@@ -537,4 +546,3 @@ void controlEvent(ControlEvent e) {
     if (mx<mn) ch3mn.setValue(mx);
   }
 }
-

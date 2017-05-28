@@ -14,4 +14,3 @@ void quantize(Planes planes, int p, Segment s, float val, boolean forward) {
     }
   }
 }
-

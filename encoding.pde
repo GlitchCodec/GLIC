@@ -14,4 +14,3 @@ String encoding_name(int v) {
   }
   return null;
 }
-

@@ -27,6 +27,7 @@ java.io.FilenameFilter glicfilter = new java.io.FilenameFilter() {
 String filename;
 String fileext;
 String foldername = "."+File.separator;
+String session_id;
 
 ////// size of windows
 final static int max_display_size = 800;
