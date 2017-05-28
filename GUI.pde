@@ -377,9 +377,11 @@ void presets(int i) {
     HashMap<String, Object> map = (HashMap)ois.readObject();
     fromHashMap(map);
     ois.close();
-  } catch (IOException e) {
+  } 
+  catch (IOException e) {
     println("Failed to load preset: " + s);
-  } catch (ClassNotFoundException e) {
+  } 
+  catch (ClassNotFoundException e) {
     println("Failed to load preset: " + s);
   }
 }
@@ -403,11 +405,10 @@ void updatePresets() {
   String[] filenames;
   java.io.File folder = new java.io.File(sketchPath("presets"));
   filenames = folder.list();
-  if(filenames != null) {
+  if (filenames != null) 
     presets_list.clear();
-    for(String s : sort(filenames)) {
-      presets_list.addItem(s,s);
-    }
+  for (String s : sort(filenames)) {
+    presets_list.addItem(s, s);
   }
 }
 
