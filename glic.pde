@@ -76,13 +76,14 @@ void keyPressed() {
     } else {
       cp5.show();
     }
-  } else if(key == 32) {
-    save_button();
-  } else if(key == 'l') {
-    load_button();
-  } else if(key == 'd') {
-    decode_button();
-  } else if(key == 'e') {
-    encode_button();
   }
+  //} else if(key == 32) {
+  //  save_button();
+  //} else if(key == 'l') {
+  //  load_button();
+  //} else if(key == 'd') {
+  //  decode_button();
+  //} else if(key == 'e') {
+  //  encode_button();
+  //}
 }

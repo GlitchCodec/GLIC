@@ -10,12 +10,12 @@ Tab ch1, ch2, ch3;
 
 Controller ch1mn, ch1mx, ch2mn, ch2mx, ch3mn, ch3mx;
 Slider co_r, co_g, co_b;
-ScrollableList sl_cs;
+ScrollableList sl_cs, presets_list;
 
 Button lbutton, ebutton, dbutton;
 ButtonBar bbar;
 
-Textfield save_filename, glic_filename;
+Textfield save_filename, glic_filename, preset_name;
 
 String[] bbar_names = new String[] {
   "Image", "Segm", "Pred", "Result"
@@ -135,7 +135,6 @@ void gui() {
     .addItems(bbar_names)
     .moveTo(global);
 
-
   cp5.addButton("reset_image")
     .setPosition(10, 510)
     .setWidth(80)
@@ -146,6 +145,31 @@ void gui() {
     .setPosition(110, 510)
     .setWidth(80)
     .setLabel("KEEP IMAGE")
+    .moveTo(global);
+
+  cp5.addLabel("presets_label")
+    .setText("Presets")
+    .setPosition(10, 540)
+    .moveTo(global);
+
+  presets_list = cp5.addScrollableList("presets")
+    .setType(ScrollableList.LIST)
+    .setPosition(10, 550)
+    .setSize(180, 120)
+    .moveTo(global);
+
+  updatePresets();
+
+  preset_name = cp5.addTextfield("Preset name")
+    .setPosition(10, 680)
+    .setWidth(180)
+    .setAutoClear(false)
+    .moveTo(global);  
+
+  cp5.addButton("save_preset")
+    .setPosition(10, 720)
+    .setSize(180, 30)
+    .setLabel("SAVE PRESET")
     .moveTo(global);
 
   chmap[0] = addToTab(ch1);
@@ -346,6 +370,47 @@ void image_switch(int v) {
   }
 }
 
+void presets(int i) {
+  String s = (String)presets_list.getItem(i).get("text");
+  try {
+    ObjectInputStream ois = new ObjectInputStream(createInput("presets"+File.separator+s));
+    HashMap<String, Object> map = (HashMap)ois.readObject();
+    fromHashMap(map);
+    ois.close();
+  } catch (IOException e) {
+    println("Failed to load preset: " + s);
+  } catch (ClassNotFoundException e) {
+    println("Failed to load preset: " + s);
+  }
+}
+
+void save_preset() {
+  String s = preset_name.getText();
+  if (s != null && !s.trim().isEmpty()) {
+    try {
+      ObjectOutputStream oos = new ObjectOutputStream(createOutput("presets"+File.separator+s));
+      oos.writeObject(toHashMap());
+      oos.close();
+    } 
+    catch (IOException e) {
+      println("Failed to save preset: " + s);
+    }
+  }
+  updatePresets();
+}
+
+void updatePresets() {
+  String[] filenames;
+  java.io.File folder = new java.io.File(sketchPath()+File.separator+"presets");
+  filenames = folder.list();
+  if(filenames != null) {
+    presets_list.clear();
+    for(String s : sort(filenames)) {
+      presets_list.addItem(s,s);
+    }
+  }
+}
+
 void readValues() {
   ccfg.colorspace = (int)sl_cs.getValue();
   ccfg.color_outside = color(co_r.getValue(), co_g.getValue(), co_b.getValue());
@@ -367,6 +432,50 @@ void readValues() {
     ccfg.transform_scale[p] = (int)pow(2.0, map.get("scale").getValue());
 
     ccfg.encoding_method[p] = (Integer)((ScrollableList)map.get("encoding")).getItem((int)map.get("encoding").getValue()).get("value");
+  }
+}
+
+HashMap<String, Object> toHashMap() {
+  HashMap<String, Object> m = new HashMap();
+
+  m.put("colorspace", sl_cs.getValue());
+  m.put("color_outside_r", co_r.getValue());
+  m.put("color_outside_g", co_g.getValue());
+  m.put("color_outside_b", co_b.getValue());
+
+  for (int p=0; p<3; p++) {
+    HashMap<String, ControllerInterface> map = chmap[p];
+    String ch = "ch"+p;
+
+    for (String k : map.keySet()) {
+      if (map.get(k) instanceof RadioButton) {
+        m.put(ch+k, map.get(k).getArrayValue());
+      } else {
+        m.put(ch+k, map.get(k).getValue());
+      }
+    }
+  }
+
+  return m;
+}
+
+void fromHashMap(HashMap<String, Object> m) {
+  sl_cs.setValue((float)m.get("colorspace"));
+  co_r.setValue((float)m.get("color_outside_r"));
+  co_g.setValue((float)m.get("color_outside_g"));
+  co_b.setValue((float)m.get("color_outside_b"));
+
+  for (int p=0; p<3; p++) {
+    HashMap<String, ControllerInterface> map = chmap[p];
+    String ch = "ch"+p;
+
+    for (String k : map.keySet()) {
+      if (map.get(k) instanceof RadioButton) {
+        map.get(k).setArrayValue((float[])m.get(ch+k));
+      } else {
+        map.get(k).setValue((float)m.get(ch+k));
+      }
+    }
   }
 }
 
