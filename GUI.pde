@@ -551,7 +551,7 @@ void save_button() {
 
 int filename_cnt = 0;
 String get_next_filename() {
-  return filename+"_"+nf(filename_cnt++, 4)+".png";
+  return filename+"_"+nf(filename_cnt++, 6)+".png";
 }
 
 void bbar_reset(String h) {
@@ -565,11 +565,11 @@ void bbar_reset(String h) {
 }
 
 void new_session() {
-  filename_cnt = 0;
   String sep = "";
   if (!do_skip_session) {
     session_id = hex(sdf.format(new Date()).hashCode());
     sep = "_" + session_id;
+    filename_cnt = 0;
     println("Session name: " + session_id);
   } else {
     session_id = "";
