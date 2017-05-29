@@ -489,7 +489,6 @@ void fromHashMap(HashMap<String, Object> m) {
 }
 
 void reset_image() {
-  new_session();
   img = current = orig;
   ipred = isegm = null;
 }
