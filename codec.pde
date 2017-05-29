@@ -320,6 +320,7 @@ PImage decode(String fname) {
 
       println("Prediction for plane " + p + " -> " + predict_name(gcr.prediction_method[p]));
 
+      float pq = quant_value(gcr.quant_value[p]);
       for (Segment s : segments[p]) {
 
         try {
@@ -340,7 +341,6 @@ PImage decode(String fname) {
           // ignore
         }
 
-        float pq = quant_value(gcr.quant_value[p]);
         if (pq>0) quantize(planes, p, s, pq, false);
 
         int[][] pred = predict(s.pred_type, planes, p, s);

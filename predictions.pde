@@ -387,7 +387,7 @@ int[][] findBestRef(Planes p, int pno, Segment s) {
 
 int[][] pred_ref(Planes p, int pno, Segment s) {
   s.pred_type = PRED_REF;
-  if (!s.foundref) {
+  if (!s.foundref || s.refx == Short.MAX_VALUE || s.refy == Short.MAX_VALUE) {
     return findBestRef(p, pno, s);
   } else {
     int[][] res = new int[s.size][s.size];

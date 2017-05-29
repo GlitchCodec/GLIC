@@ -5,8 +5,8 @@ class Segment {
   int pred_type = PRED_NONE;
   float angle = -1;
   int refa = -1;
-  int refx = -1;
-  int refy = -1;
+  int refx = Short.MAX_VALUE;
+  int refy = Short.MAX_VALUE;
   boolean foundref = false;
   boolean foundang = false; 
 }
@@ -66,8 +66,8 @@ void segment(DefaultBitInput segm_in, ArrayList<Segment> s, Planes p, int x, int
     segm.x = x;
     segm.y = y;
     segm.size = size;
-    segm.foundang = true;
-    segm.foundref = true;
+    segm.foundang = false;
+    segm.foundref = false;
     s.add(segm);
   }
 }
