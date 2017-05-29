@@ -5,7 +5,7 @@ import java.util.Date;
 ControlP5 cp5;
 
 CheckBox separate_channels;
-CheckBox batch, skip_header;
+CheckBox batch, skip_header, skip_session;
 Tab ch1, ch2, ch3;
 
 Controller ch1mn, ch1mx, ch2mn, ch2mx, ch3mn, ch3mx;
@@ -24,6 +24,7 @@ String[] bbar_names = new String[] {
 HashMap<String, ControllerInterface>[] chmap = new HashMap[3];
 
 boolean separate_channels_toggle = false;
+boolean do_skip_session = false;
 
 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 
@@ -129,45 +130,51 @@ void gui() {
         .setAutoClear(false)
           .moveTo(global);
 
+  skip_session = cp5.addCheckBox("skip_session")
+    .setPosition(10, 430)
+      .addItem("Skip generating session id", 1)
+        .deactivate(0)
+          .moveTo(global);
+
   bbar = cp5.addButtonBar("image_switch")
-    .setPosition(10, 440)
+    .setPosition(10, 450)
       .setWidth(180)
         .addItems(bbar_names)
           .moveTo(global);
 
   cp5.addButton("reset_image")
-    .setPosition(10, 460)
+    .setPosition(10, 470)
       .setWidth(89)
         .setLabel("RESET IMAGE")
           .moveTo(global);
 
   cp5.addButton("keep_image")
-    .setPosition(101, 460)
+    .setPosition(101, 470)
       .setWidth(89)
         .setLabel("KEEP IMAGE")
           .moveTo(global);
 
   cp5.addLabel("presets_label")
     .setText("Presets")
-      .setPosition(10, 490)
+      .setPosition(10, 500)
         .moveTo(global);
 
   presets_list = cp5.addScrollableList("presets")
     .setType(ScrollableList.LIST)
-      .setPosition(10, 500)
+      .setPosition(10, 510)
         .setSize(180, 120)
           .moveTo(global);
 
   updatePresets();
 
   preset_name = cp5.addTextfield("Preset name")
-    .setPosition(10, 630)
+    .setPosition(10, 650)
       .setWidth(180)
         .setAutoClear(false)
           .moveTo(global);  
 
   cp5.addButton("save_preset")
-    .setPosition(10, 670)
+    .setPosition(10, 690)
       .setSize(180, 20)
         .setLabel("SAVE PRESET")
           .moveTo(global);
@@ -534,7 +541,9 @@ void decode_button() {
 
 void save_button() {
   if (buffer != null) {
-    String fn = foldername+File.separator+filename+"_"+session_id+File.separator+save_filename.getText();
+    String sep = "";
+    if(!do_skip_session) sep = "_" + session_id;
+    String fn = foldername+File.separator+filename+sep+File.separator+save_filename.getText();
     println(fn);
     buffer.save(fn);
     save_filename.setText(get_next_filename());
@@ -558,10 +567,16 @@ void bbar_reset(String h) {
 
 void new_session() {
   filename_cnt = 0;
-  session_id = hex(sdf.format(new Date()).hashCode());
-  println("Session name: " + session_id);
+  String sep = "";
+  if (!do_skip_session) {
+    session_id = hex(sdf.format(new Date()).hashCode());
+    sep = "_" + session_id;
+    println("Session name: " + session_id);
+  } else {
+    session_id = "";
+  }
   save_filename.setText(get_next_filename());
-  glic_filename.setText(filename+"_"+session_id+".glic");
+  glic_filename.setText(filename+sep+".glic");
 }
 
 void fileSelected(File selection) {
@@ -623,6 +638,11 @@ void controlEvent(ControlEvent e) {
 
   if (e.isFrom(skip_header)) {
     do_skip_header = !do_skip_header;
+  }
+
+  if (e.isFrom(skip_session)) {
+    do_skip_session = !do_skip_session;
+    new_session();
   }
 
   if (e.isFrom(ch1mn)) {
