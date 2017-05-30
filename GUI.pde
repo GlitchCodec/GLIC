@@ -382,6 +382,7 @@ void image_switch(int v) {
     current = result; 
     break;
   }
+  reset_buffer();
 }
 
 void presets(int i) {
@@ -498,6 +499,7 @@ void fromHashMap(HashMap<String, Object> m) {
 void reset_image() {
   img = current = orig;
   ipred = isegm = null;
+  reset_buffer();
 }
 
 void keep_image() {
@@ -509,8 +511,8 @@ void encode_button() {
   if (!isBatch) {
     println(foldername+File.separator+glic_filename.getText());
     result = encode(img, foldername+File.separator+glic_filename.getText());
-
     current = result;
+    reset_buffer();
   } else {
     println("batch: "+foldername);
     java.io.File folder = new java.io.File(dataPath(foldername)); // set up a File object for the directory
@@ -518,7 +520,7 @@ void encode_button() {
     curFrame = 0;
     while (curFrame<filenames.length) {
       img = loadImage(foldername+File.separator+filenames[curFrame]);
-      result = encode(img, foldername+File.separator+"glic"+File.separator+filenames[curFrame].replace(".png","").replace(".jpg","").replace(".jpeg","").replace(".bmp","")+".glic"); // todo: make filename without extension
+      result = encode(img, foldername+File.separator+"glic"+File.separator+filenames[curFrame].replace(".png", "").replace(".jpg", "").replace(".jpeg", "").replace(".bmp", "")+".glic"); // todo: make filename without extension
       current = result;
       curFrame++;
     }
@@ -532,6 +534,7 @@ void decode_button() {
     println(foldername+File.separator+glic_filename.getText());
     result = decode(foldername+File.separator+glic_filename.getText());
     current = result;
+    reset_buffer();
   } else {
     println("batch: "+foldername);
     java.io.File folder = new java.io.File(dataPath(foldername)); // set up a File object for the directory
@@ -539,7 +542,7 @@ void decode_button() {
     curFrame = 0;
     while (curFrame<filenames.length) {
       result = decode(foldername+File.separator+filenames[curFrame]);
-      result.save(foldername+File.separator+filenames[curFrame].replace(".glic","")+".png");
+      result.save(foldername+File.separator+filenames[curFrame].replace(".glic", "")+".png");
       current = result;
     }
   }
@@ -607,16 +610,21 @@ void fileSelected(File selection) {
       bbar_reset("Result");
     }
 
-    float ratio = (float)img.width/(float)img.height;
+    new_session();
+
+    current = img;
+    reset_buffer();
+  }
+}
+
+void reset_buffer() {
+  if (current != null) { 
+    float ratio = (float)current.width/(float)current.height;
     neww = ratio < 1.0 ? (int)(max_display_size * ratio) : max_display_size;
     newh = ratio < 1.0 ? max_display_size : (int)(max_display_size / ratio);
     posx = ratio < 1.0 ? (max_display_size-neww) / 2 : 0;
     posy = ratio < 1.0 ? 0 : (max_display_size-newh) / 2;
-    buffer = createGraphics(img.width, img.height);
-
-    new_session();
-
-    current = img;
+    buffer = createGraphics(current.width, current.height);
   }
 }
 
