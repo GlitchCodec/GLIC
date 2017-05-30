@@ -94,13 +94,13 @@ void gui() {
   lbutton = cp5.addButton("load_button")
     .setPosition(10, 220)
       .setSize(180, 20)
-        .setLabel("LOAD IMAGE (l)")
+        .setLabel("LOAD IMAGE (ctrl-l)")
           .moveTo(global);
 
   ebutton = cp5.addButton("encode_button")
     .setPosition(10, 250)
       .setSize(180, 20)
-        .setLabel("ENCODE (e)")
+        .setLabel("ENCODE (ctrl-e)")
           .moveTo(global);
 
   skip_header = cp5.addCheckBox("skip_header")
@@ -112,13 +112,13 @@ void gui() {
   dbutton = cp5.addButton("decode_button")
     .setPosition(10, 290)
       .setSize(180, 20)
-        .setLabel("DECODE (d)")
+        .setLabel("DECODE (ctrl-d)")
           .moveTo(global);
 
   cp5.addButton("save_button")
     .setPosition(10, 320)
       .setSize(180, 20)
-        .setLabel("SAVE RESULT (SPACE)")
+        .setLabel("SAVE RESULT (ctrl-s)")
           .moveTo(global);
 
   save_filename = cp5.addTextfield("Save filename")

@@ -40,23 +40,27 @@ int neww, newh, posx=0, posy=0;
 PGraphics buffer;
 
 void setup() {
-  size(750,750);
+  size(750, 750);
   smooth(8);
   frameRate(20);
-  
-//  img = loadImage("face.jpg");
-//  
-//  buffer=createGraphics(img.width,img.height);
-//  neww=img.width;
-//  newh=img.height;
-//  result = encode(img,"faa.glic");
-//  current = result;
-  
+
+  //  img = loadImage("face.jpg");
+  //  
+  //  buffer=createGraphics(img.width,img.height);
+  //  neww=img.width;
+  //  newh=img.height;
+  //  result = encode(img,"faa.glic");
+  //  current = result;
+
   gui();
-  
+
+  println();
   println("Press TAB to hide/show GUI");
-  println("Press SPACE to save image");
-  println("");
+  println("Press CTRL-L to load image");
+  println("Press CTRL-E to encode image");
+  println("Press CTRL-D to decode image");
+  println("Press CTRL-S to save image");
+  println();
 }
 
 void draw() {
@@ -69,21 +73,30 @@ void draw() {
   }
 }
 
+boolean isCtrlPressed = false;
+
 void keyPressed() {
-  if(keyCode == TAB) {
-    if(cp5.isVisible()) {
+  if (keyCode == TAB) {
+    if (cp5.isVisible()) {
       cp5.hide();
     } else {
       cp5.show();
     }
+  } else if (keyCode == CONTROL && isCtrlPressed == false)
+    isCtrlPressed = true;
+  else if (isCtrlPressed) {    
+    if (char(keyCode) == 'S') {
+      save_button();
+    } else if (char(keyCode) == 'L') {
+      load_button();
+    } else if (char(keyCode) == 'D') {
+      decode_button();
+    } else if (char(keyCode) == 'E') {
+      encode_button();
+    }
   }
-  //} else if(key == 32) {
-  //  save_button();
-  //} else if(key == 'l') {
-  //  load_button();
-  //} else if(key == 'd') {
-  //  decode_button();
-  //} else if(key == 'e') {
-  //  encode_button();
-  //}
+}
+
+void keyReleased() {
+  if (keyCode == CONTROL) isCtrlPressed = false;
 }
