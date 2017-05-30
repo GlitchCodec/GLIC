@@ -47,21 +47,24 @@ void gui() {
       .setWidth(170)
         .setRange(0, 255)
           .setValue(128)
-            .moveTo(global);
+            .setScrollSensitivity(0.02)
+              .moveTo(global);
 
   co_g = cp5.addSlider("G")
     .setPosition(10, 170)
       .setWidth(170)
         .setRange(0, 255)
           .setValue(128)
-            .moveTo(global);
+            .setScrollSensitivity(0.02)
+              .moveTo(global);
 
   co_b = cp5.addSlider("B")
     .setPosition(10, 180)
       .setWidth(170)
         .setRange(0, 255)
           .setValue(128)
-            .moveTo(global);
+            .setScrollSensitivity(0.02)
+              .moveTo(global);
 
   separate_channels = cp5.addCheckBox("separate_channels")
     .setPosition(10, 200)
@@ -229,7 +232,8 @@ HashMap<String, ControllerInterface> addToTab(Tab t) {
         .setWidth(160)
           .setRange(5, 250)
             .setValue(15)
-              .moveTo(t);
+              .setScrollSensitivity(0.02)
+                .moveTo(t);
 
   h.put("thr", thr_block);
 
@@ -263,7 +267,8 @@ HashMap<String, ControllerInterface> addToTab(Tab t) {
         .setWidth(180)
           .setRange(0, 255)
             .setValue(0)
-              .moveTo(t);
+              .setScrollSensitivity(0.02)
+                .moveTo(t);
 
   h.put("quant", quant);
 
@@ -308,7 +313,8 @@ HashMap<String, ControllerInterface> addToTab(Tab t) {
         .setWidth(180)
           .setRange(0, 255)
             .setValue(0)
-              .moveTo(t);
+              .setScrollSensitivity(0.02)
+                .moveTo(t);
 
   h.put("compress", compress);
 
@@ -323,7 +329,8 @@ HashMap<String, ControllerInterface> addToTab(Tab t) {
         .setWidth(180)
           .setRange(2, 24)
             .setValue(20)
-              .moveTo(t);
+              .setScrollSensitivity(0.02)
+                .moveTo(t);
 
   h.put("scale", scaler);
 
@@ -541,7 +548,7 @@ void decode_button() {
 void save_button() {
   if (buffer != null) {
     String sep = "";
-    if(!do_skip_session) sep = "_" + session_id;
+    if (!do_skip_session) sep = "_" + session_id;
     String fn = foldername+File.separator+filename+sep+File.separator+save_filename.getText();
     println(fn);
     buffer.save(fn);
