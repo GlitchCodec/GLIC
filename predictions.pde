@@ -381,13 +381,12 @@ int[][] findBestRef(Planes p, int pno, Segment s) {
       s.refy = yy;
     }
   }
-  s.foundref = true;
   return currres;
 }
 
 int[][] pred_ref(Planes p, int pno, Segment s) {
   s.pred_type = PRED_REF;
-  if (!s.foundref || s.refx == Short.MAX_VALUE || s.refy == Short.MAX_VALUE) {
+  if (s.refx == Short.MAX_VALUE || s.refy == Short.MAX_VALUE) {
     return findBestRef(p, pno, s);
   } else {
     int[][] res = new int[s.size][s.size];
@@ -460,13 +459,12 @@ int[][] findBestAngle(Planes p, int pno, Segment s) {
       }
     }
   }
-  s.foundang = true;
   return currres;
 }
 
 int[][] pred_angle(Planes p, int pno, Segment s) {
   s.pred_type = PRED_ANGLE;
-  if (s.angle<0 || s.refa<0 || !s.foundang) {
+  if (s.angle<0 || s.refa<0) {
     return findBestAngle(p, pno, s);
   } else {
     int[][] res = new int[s.size][s.size];

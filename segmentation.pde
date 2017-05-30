@@ -7,8 +7,6 @@ class Segment {
   int refa = -1;
   int refx = Short.MAX_VALUE;
   int refy = Short.MAX_VALUE;
-  boolean foundref = false;
-  boolean foundang = false; 
 }
 
 ArrayList<Segment> makeSegmentation(DefaultBitOutput segm_out, Planes p, int pno, int min_size, int max_size, float thr) throws IOException {
@@ -66,8 +64,6 @@ void segment(DefaultBitInput segm_in, ArrayList<Segment> s, Planes p, int x, int
     segm.x = x;
     segm.y = y;
     segm.size = size;
-    segm.foundang = false;
-    segm.foundref = false;
     s.add(segm);
   }
 }
