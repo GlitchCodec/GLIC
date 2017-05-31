@@ -544,6 +544,7 @@ void decode_button() {
       result = decode(foldername+File.separator+filenames[curFrame]);
       result.save(foldername+File.separator+filenames[curFrame].replace(".glic", "")+".png");
       current = result;
+      curFrame++;
     }
   }
   bbar_reset("Result");
