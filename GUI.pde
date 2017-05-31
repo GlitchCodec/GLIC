@@ -285,7 +285,7 @@ HashMap<String, ControllerInterface> addToTab(Tab t) {
   h.put("clamp", clamp);
 
   ScrollableList trans = cp5.addScrollableList(t.getName() + "trans")
-    .setLabel("Transformations")
+    .setLabel("Wavelet")
       .setType(ScrollableList.LIST)
         .setPosition(10, 260)
           .setSize(180, 120)

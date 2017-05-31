@@ -508,19 +508,7 @@ class GlicCodecReader {
       for (Segment segm : s) {
         for (int x=0; x<segm.size; x++) {
           for (int y=0; y<segm.size; y++) {
-            if (transform_method[pno] == WAVELET_NONE) {
-              if (clamp_method[pno] == CLAMP_NONE) {
-                p.set(pno, segm.x+x, segm.y+y, in.readInt(false, 9));
-              } else if (clamp_method[pno] == CLAMP_MOD256) {
-                p.set(pno, segm.x+x, segm.y+y, in.readInt(true, 8));
-              }
-            } else {
-              if (clamp_method[pno] == CLAMP_NONE) {
-                p.set(pno, segm.x+x, segm.y+y, in.readInt(false, bits+1));
-              } else if (clamp_method[pno] == CLAMP_MOD256) {
-                p.set(pno, segm.x+x, segm.y+y, in.readInt(true, bits));
-              }
-            }
+            p.set(pno, segm.x+x, segm.y+y, decodePackedBits(in, pno, bits));
           }
         }
       }
@@ -532,6 +520,23 @@ class GlicCodecReader {
       // ignore
     }
   }
+
+  int decodePackedBits(DefaultBitInput in, int pno, int bits) throws IOException {
+    if (transform_method[pno] == WAVELET_NONE) {
+      if (clamp_method[pno] == CLAMP_NONE) {
+        return in.readInt(false, 9);
+      } else if (clamp_method[pno] == CLAMP_MOD256) {
+        return in.readInt(true, 8);
+      }
+    } else {
+      if (clamp_method[pno] == CLAMP_NONE) {
+        return in.readInt(false, bits+1);
+      } else if (clamp_method[pno] == CLAMP_MOD256) {
+        return in.readInt(true, bits);
+      }
+    }
+    return 0;
+  } 
 
   void skip(int bytes) throws IOException {
     for (int i=0; i<bytes; i++) o.readByte();
@@ -658,6 +663,9 @@ class GlicCodecWriter {
     case ENCODING_PACKED: 
       encode_packed(p, pno, s); 
       break;
+    case ENCODING_RLE:
+      encode_rle(p, pno, s);
+      break;
     default:
       encode_raw(p, pno, s);
     }
@@ -683,24 +691,72 @@ class GlicCodecWriter {
     for (Segment segm : s) {
       for (int x=0; x<segm.size; x++) {
         for (int y=0; y<segm.size; y++) {
-          if (ccfg.transform_method[pno] == WAVELET_NONE) {
-            if (ccfg.clamp_method[pno] == CLAMP_NONE) {
-              out.writeInt(false, 9, p.get(pno, segm.x+x, segm.y+y));
-            } else if (ccfg.clamp_method[pno] == CLAMP_MOD256) {
-              out.writeInt(true, 8, p.get(pno, segm.x+x, segm.y+y));
-            }
-          } else {
-            if (ccfg.clamp_method[pno] == CLAMP_NONE) {
-              out.writeInt(false, bits+1, p.get(pno, segm.x+x, segm.y+y));
-            } else if (ccfg.clamp_method[pno] == CLAMP_MOD256) {
-              out.writeInt(true, bits, p.get(pno, segm.x+x, segm.y+y));
-            }
-          }
+          emitPackedBits(out, pno, bits, p.get(pno, segm.x+x, segm.y+y));
         }
       }
     }
     out.align(1);
   }
+
+  void encode_rle(Planes p, int pno, ArrayList<Segment> s) throws IOException {
+    DefaultBitOutput out = new DefaultBitOutput(new StreamByteOutput(o));
+
+    int bits = (int)ceil(log(ccfg.transform_scale[pno])/log(2.0));
+    int currentval = 0;
+    boolean firstval = true;
+    int currentcnt = 0;
+
+    for (Segment segm : s) {
+      for (int x=0; x<segm.size; x++) {
+        for (int y=0; y<segm.size; y++) {
+          int val = p.get(pno, segm.x+x, segm.y+y);
+
+          if (firstval) {
+            currentval = val;
+            currentcnt++;
+            firstval = false;
+          } else {
+            if (currentval != val || currentcnt == 127) {
+              if (currentval == 1) {
+                out.writeBoolean(false);
+              } else {
+                out.writeBoolean(true);
+              }
+              emitPackedBits(out, pno, bits, currentval);
+              currentval = val;
+              currentcnt = 1;
+            } else {
+              currentcnt++;
+            }
+          }
+        }
+      }
+    }
+
+    if (currentval == 1) {
+      out.writeBoolean(false);
+    } else {
+      out.writeBoolean(true);
+    }
+    emitPackedBits(out, pno, bits, currentval);
+    out.align(1);
+  }
+
+  void emitPackedBits(DefaultBitOutput out, int pno, int bits, int val) throws IOException {
+    if (ccfg.transform_method[pno] == WAVELET_NONE) {
+      if (ccfg.clamp_method[pno] == CLAMP_NONE) {
+        out.writeInt(false, 9, val);
+      } else if (ccfg.clamp_method[pno] == CLAMP_MOD256) {
+        out.writeInt(true, 8, val);
+      }
+    } else {
+      if (ccfg.clamp_method[pno] == CLAMP_NONE) {
+        out.writeInt(false, bits+1, val);
+      } else if (ccfg.clamp_method[pno] == CLAMP_MOD256) {
+        out.writeInt(true, bits, val);
+      }
+    }
+  } 
 
   void writeSegmentsData(int pno, ArrayList<Segment> segments) throws IOException {
     ByteArrayOutputStream baus = new ByteArrayOutputStream();
@@ -861,3 +917,4 @@ class GlicCodecWriter {
     println(data_sizes);
   }
 }
+

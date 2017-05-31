@@ -65,7 +65,7 @@ void setup() {
 
 void draw() {
   background(0);
-  if (current != null) {
+  if (current != null && buffer != null) {
     buffer.beginDraw();
     buffer.image(current, 0, 0);
     buffer.endDraw();
