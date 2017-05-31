@@ -470,10 +470,14 @@ class GlicCodecReader {
   }
 
   void readData(int method, Planes p, int pno, ArrayList<Segment> s) throws IOException { 
+    println(encoding_name(method));
     try {
       switch (method) {
       case ENCODING_PACKED:
         decode_packed(p, pno, s); 
+        break;  
+      case ENCODING_RLE:
+        decode_rle(p, pno, s); 
         break;  
       default:
         decode_raw(p, pno, s);
@@ -509,6 +513,44 @@ class GlicCodecReader {
         for (int x=0; x<segm.size; x++) {
           for (int y=0; y<segm.size; y++) {
             p.set(pno, segm.x+x, segm.y+y, decodePackedBits(in, pno, bits));
+          }
+        }
+      }
+    } 
+    catch(EOFException e) {
+      // ignore
+    }
+    catch(IllegalStateException e) {
+      // ignore
+    }
+  }
+
+  void decode_rle(Planes p, int pno, ArrayList<Segment> s) throws IOException {
+    byte[] d = readArray(data_sizes[pno]);
+    DefaultBitInput in = new DefaultBitInput(new ArrayByteInput(d, 0, d.length));
+
+    int bits = (int)ceil(log(transform_scale[pno])/log(2.0));
+    int currentval = 0;
+    boolean do_read_type = true;
+    int currentcnt = 0;
+
+    try {
+      for (Segment segm : s) {
+        for (int x=0; x<segm.size; x++) {
+          for (int y=0; y<segm.size; y++) {
+
+            if (do_read_type) {
+              if (in.readBoolean()) { // size
+                currentcnt = in.readInt(true, 7);
+                do_read_type = false;
+              }
+              currentval = decodePackedBits(in, pno, bits);
+            }
+            p.set(pno, segm.x+x, segm.y+y, currentval);
+            currentcnt--;
+            if (currentcnt == 0) {
+              do_read_type = true;
+            }
           }
         }
       }
@@ -713,14 +755,15 @@ class GlicCodecWriter {
 
           if (firstval) {
             currentval = val;
-            currentcnt++;
+            currentcnt = 1;
             firstval = false;
           } else {
             if (currentval != val || currentcnt == 127) {
-              if (currentval == 1) {
+              if (currentcnt == 1) {
                 out.writeBoolean(false);
               } else {
                 out.writeBoolean(true);
+                out.writeInt(true, 7, currentcnt);
               }
               emitPackedBits(out, pno, bits, currentval);
               currentval = val;
