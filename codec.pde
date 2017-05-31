@@ -469,8 +469,7 @@ class GlicCodecReader {
     }
   }
 
-  void readData(int method, Planes p, int pno, ArrayList<Segment> s) throws IOException { 
-    println(encoding_name(method));
+  void readData(int method, Planes p, int pno, ArrayList<Segment> s) throws IOException {
     try {
       switch (method) {
       case ENCODING_PACKED:
