@@ -540,7 +540,7 @@ class GlicCodecReader {
 
             if (do_read_type) {
               if (in.readBoolean()) { // size
-                currentcnt = in.readInt(true, 7);
+                currentcnt = in.readInt(true, 7)+2;
                 do_read_type = false;
               }
               currentval = decodePackedBits(in, pno, bits);
@@ -757,12 +757,12 @@ class GlicCodecWriter {
             currentcnt = 1;
             firstval = false;
           } else {
-            if (currentval != val || currentcnt == 127) {
+            if (currentval != val || currentcnt == 129) {
               if (currentcnt == 1) {
                 out.writeBoolean(false);
               } else {
                 out.writeBoolean(true);
-                out.writeInt(true, 7, currentcnt);
+                out.writeInt(true, 7, currentcnt-2);
               }
               emitPackedBits(out, pno, bits, currentval);
               currentval = val;
