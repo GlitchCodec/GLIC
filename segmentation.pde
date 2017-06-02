@@ -5,8 +5,8 @@ class Segment {
   int pred_type = PRED_NONE;
   float angle = -1;
   int refa = -1;
-  int refx = Short.MAX_VALUE;
-  int refy = Short.MAX_VALUE;
+  int refx = Short.MAX_VALUE; /// set to -1 if you want grid effect
+  int refy = Short.MAX_VALUE; /// set to -1 if you want grid effect
 }
 
 ArrayList<Segment> makeSegmentation(DefaultBitOutput segm_out, Planes p, int pno, int min_size, int max_size, float thr) throws IOException {
