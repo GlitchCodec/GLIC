@@ -149,6 +149,8 @@ PImage encode(PImage img, String fname) {
       // gather SAD/BSAD statistics
       pred_sad_stats = new int[MAX_PRED];
 
+      float pq = quant_value(ccfg.quantization_value[p]);
+
       for (Segment s : segments[p]) {
 
         // predict
@@ -157,9 +159,7 @@ PImage encode(PImage img, String fname) {
         // calculate residuals and clamp
         planes.subtract(p, s, pred, ccfg.clamp_method[p]);
 
-
         // quantize result
-        float pq = quant_value(ccfg.quantization_value[p]);
         if (pq > 0) quantize(planes, p, s, pq, true); 
 
         // if transformation applied transform and compress
@@ -570,11 +570,7 @@ class GlicCodecReader {
         return in.readInt(true, 8);
       }
     } else {
-      if (clamp_method[pno] == CLAMP_NONE) {
-        return in.readInt(false, bits+1);
-      } else if (clamp_method[pno] == CLAMP_MOD256) {
-        return in.readInt(true, bits);
-      }
+      return in.readInt(false, bits+1);
     }
     return 0;
   } 
@@ -792,11 +788,7 @@ class GlicCodecWriter {
         out.writeInt(true, 8, val);
       }
     } else {
-      if (ccfg.clamp_method[pno] == CLAMP_NONE) {
-        out.writeInt(false, bits+1, val);
-      } else if (ccfg.clamp_method[pno] == CLAMP_MOD256) {
-        out.writeInt(true, bits, val);
-      }
+      out.writeInt(false, bits+1, val);
     }
   } 
 

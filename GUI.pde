@@ -421,8 +421,12 @@ void updatePresets() {
   java.io.File folder = new java.io.File(sketchPath("presets"));
   filenames = folder.list();
   if (filenames != null) {
+    String[] l = new String[filenames.length];
+    for(int i=0;i<filenames.length;i++) {
+      l[i] = filenames[i].toLowerCase();
+    }
     presets_list.clear();
-    for (String s : sort (filenames)) {
+    for (String s : sort (l)) {
       presets_list.addItem(s, s);
     }
   }
@@ -459,6 +463,7 @@ HashMap<String, Object> toHashMap() {
   m.put("color_outside_r", co_r.getValue());
   m.put("color_outside_g", co_g.getValue());
   m.put("color_outside_b", co_b.getValue());
+  m.put("separate_channels", separate_channels.getArrayValue());
 
   for (int p=0; p<3; p++) {
     HashMap<String, ControllerInterface> map = chmap[p];
@@ -481,6 +486,10 @@ void fromHashMap(HashMap<String, Object> m) {
   co_r.setValue((Float)m.get("color_outside_r"));
   co_g.setValue((Float)m.get("color_outside_g"));
   co_b.setValue((Float)m.get("color_outside_b"));
+  if(m.get("separate_channels") != null)
+    separate_channels.setArrayValue((float[])m.get("separate_channels"));
+    else
+    separate_channels.deactivate(0);
 
   for (int p=0; p<3; p++) {
     HashMap<String, ControllerInterface> map = chmap[p];
