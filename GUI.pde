@@ -405,7 +405,7 @@ void save_preset() {
   String s = preset_name.getText();
   if (s != null && !s.trim().isEmpty()) {
     try {
-      ObjectOutputStream oos = new ObjectOutputStream(createOutput("presets"+File.separator+s));
+      ObjectOutputStream oos = new ObjectOutputStream(createOutput("presets"+File.separator+s.toLowerCase()));
       oos.writeObject(toHashMap());
       oos.close();
     } 
@@ -421,12 +421,8 @@ void updatePresets() {
   java.io.File folder = new java.io.File(sketchPath("presets"));
   filenames = folder.list();
   if (filenames != null) {
-    String[] l = new String[filenames.length];
-    for(int i=0;i<filenames.length;i++) {
-      l[i] = filenames[i].toLowerCase();
-    }
     presets_list.clear();
-    for (String s : sort (l)) {
+    for (String s : sort (filenames)) {
       presets_list.addItem(s, s);
     }
   }
@@ -503,6 +499,8 @@ void fromHashMap(HashMap<String, Object> m) {
       }
     }
   }
+  
+  toggle_sep_chan();
 }
 
 void reset_image() {
@@ -642,9 +640,8 @@ void load_button() {
   selectInput("Select a file to process:", "fileSelected");
 }
 
-void controlEvent(ControlEvent e) {
-  if (e.isFrom(separate_channels)) {
-    if (separate_channels.getArrayValue()[0]==1) {
+void toggle_sep_chan() {
+  if (separate_channels.getArrayValue()[0]==1) {
       ch1.setLabel("Channel 1");
       ch2.setVisible(true);
       ch3.setVisible(true);
@@ -655,6 +652,11 @@ void controlEvent(ControlEvent e) {
       ch3.setVisible(false);
       separate_channels_toggle = false;
     }
+}
+
+void controlEvent(ControlEvent e) {
+  if (e.isFrom(separate_channels)) {
+    toggle_sep_chan();
   }
 
   if (e.isFrom(batch)) {
