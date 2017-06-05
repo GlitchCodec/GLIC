@@ -5,3 +5,10 @@ application.linux64
 application.windows32
 application.windows64
 application.macosx
+*.glic
+*.bak
+*.*~
+*.jpg
+*.jpeg
+*.png
+
