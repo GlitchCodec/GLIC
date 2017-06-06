@@ -370,7 +370,7 @@ HashMap<String, ControllerInterface> addToTab(Tab t) {
 void image_switch(int v) {
   switch(v) {
   case 0: 
-    current = img; 
+    current = img;
     break;
   case 1: 
     current = isegm; 
@@ -388,6 +388,7 @@ void image_switch(int v) {
 void presets(int i) {
   String s = (String)presets_list.getItem(i).get("text");
   try {
+    println("Loading preset: " + s);
     ObjectInputStream ois = new ObjectInputStream(createInput("presets"+File.separator+s));
     HashMap<String, Object> map = (HashMap)ois.readObject();
     fromHashMap(map);
@@ -405,6 +406,7 @@ void save_preset() {
   String s = preset_name.getText();
   if (s != null && !s.trim().isEmpty()) {
     try {
+      println("Saving preset: " + s);
       ObjectOutputStream oos = new ObjectOutputStream(createOutput("presets"+File.separator+s.toLowerCase()));
       oos.writeObject(toHashMap());
       oos.close();
@@ -418,6 +420,7 @@ void save_preset() {
 
 void updatePresets() {
   String[] filenames;
+  println("Loading presets");
   java.io.File folder = new java.io.File(sketchPath("presets"));
   filenames = folder.list();
   if (filenames != null) {
@@ -504,6 +507,7 @@ void fromHashMap(HashMap<String, Object> m) {
 }
 
 void reset_image() {
+  println("Reset image done");
   img = current = orig;
   ipred = isegm = null;
   reset_buffer();
@@ -516,7 +520,7 @@ void keep_image() {
 void encode_button() {
   readValues();
   if (!isBatch) {
-    println(foldername+File.separator+glic_filename.getText());
+    println("Encoding: " + foldername+File.separator+glic_filename.getText());
     result = encode(img, foldername+File.separator+glic_filename.getText());
     current = result;
     reset_buffer();
@@ -526,6 +530,7 @@ void encode_button() {
     filenames = folder.list(extfilter); // fill the fileNames string array with the filter result
     curFrame = 0;
     while (curFrame<filenames.length) {
+      println("Encoding: " + foldername+File.separator+filenames[curFrame]);
       img = loadImage(foldername+File.separator+filenames[curFrame]);
       result = encode(img, foldername+File.separator+"glic"+File.separator+filenames[curFrame].replace(".png", "").replace(".jpg", "").replace(".jpeg", "").replace(".bmp", "")+".glic"); // todo: make filename without extension
       current = result;
@@ -536,18 +541,18 @@ void encode_button() {
 }
 
 void decode_button() {
-
   if (!isBatch) {
-    println(foldername+File.separator+glic_filename.getText());
+    println("Decoding: " + foldername+File.separator+glic_filename.getText());
     result = decode(foldername+File.separator+glic_filename.getText());
     current = result;
     reset_buffer();
   } else {
-    println("batch: "+foldername);
+    println("Batch: "+foldername);
     java.io.File folder = new java.io.File(dataPath(foldername)); // set up a File object for the directory
     filenames = folder.list(glicfilter); // fill the fileNames string array with the filter result
     curFrame = 0;
     while (curFrame<filenames.length) {
+      println("Decoding: " + foldername+File.separator+filenames[curFrame]);
       result = decode(foldername+File.separator+filenames[curFrame]);
       result.save(foldername+File.separator+filenames[curFrame].replace(".glic", "")+".png");
       current = result;
@@ -562,7 +567,7 @@ void save_button() {
     String sep = "";
     if (!do_skip_session) sep = "_" + session_id;
     String fn = foldername+File.separator+filename+sep+File.separator+save_filename.getText();
-    println(fn);
+    println("Saving: " + fn);
     buffer.save(fn);
     save_filename.setText(get_next_filename());
   }
@@ -607,10 +612,13 @@ void fileSelected(File selection) {
     filename = fn.substring(0, i);
     foldername = selection.getParent();
 
+    println("Loading file: " + selection.getAbsolutePath());
+
     if ("jpg".equals(fileext)
       || "jpeg".equals(fileext)
       || "gif".equals(fileext)
-      || "png".equals(fileext)) {
+      || "png".equals(fileext)
+      || "bmp".equals(fileext)) {
       orig = img = loadImage(selection.getAbsolutePath());
       bbar_reset("Image");
     } else {

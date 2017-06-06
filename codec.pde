@@ -469,45 +469,47 @@ class GlicCodecReader {
     }
   }
 
-  void readData(int method, Planes p, int pno, ArrayList<Segment> s) throws IOException {
+  void readData(int method, Planes p, int pno, ArrayList<Segment> s) {
+    switch (method) {
+    case ENCODING_PACKED:
+      decode_packed(p, pno, s); 
+      break;  
+    case ENCODING_RLE:
+      decode_rle(p, pno, s); 
+      break;  
+    default:
+      decode_raw(p, pno, s);
+    }
+  }
+
+  void decode_raw(Planes p, int pno, ArrayList<Segment> s) {
     try {
-      switch (method) {
-      case ENCODING_PACKED:
-        decode_packed(p, pno, s); 
-        break;  
-      case ENCODING_RLE:
-        decode_rle(p, pno, s); 
-        break;  
-      default:
-        decode_raw(p, pno, s);
+      int idx=0;
+      for (Segment segm : s) {
+        for (int x=0; x<segm.size; x++) {
+          for (int y=0; y<segm.size; y++) {
+            if (idx < data_sizes[pno]) {
+              p.set(pno, segm.x+x, segm.y+y, o.readInt());
+              idx+=4;
+            }
+          }
+        }
       }
     } 
-    catch (EOFException e) {
+    catch (IOException e) {
+      println("decode raw failed");
       // ignore
     }
   }
 
-  void decode_raw(Planes p, int pno, ArrayList<Segment> s) throws IOException {
-    int idx=0;
-    for (Segment segm : s) {
-      for (int x=0; x<segm.size; x++) {
-        for (int y=0; y<segm.size; y++) {
-          if (idx < data_sizes[pno]) {
-            p.set(pno, segm.x+x, segm.y+y, o.readInt());
-            idx+=4;
-          }
-        }
-      }
-    }
-  }
-
-  void decode_packed(Planes p, int pno, ArrayList<Segment> s) throws IOException {
-    byte[] d = readArray(data_sizes[pno]);
-    DefaultBitInput in = new DefaultBitInput(new ArrayByteInput(d, 0, d.length));
-
-    int bits = (int)ceil(log(transform_scale[pno])/log(2.0));
-
+  void decode_packed(Planes p, int pno, ArrayList<Segment> s) {
     try {
+      byte[] d = readArray(data_sizes[pno]);
+      DefaultBitInput in = new DefaultBitInput(new ArrayByteInput(d, 0, d.length));
+
+      int bits = (int)ceil(log(transform_scale[pno])/log(2.0));
+
+
       for (Segment segm : s) {
         for (int x=0; x<segm.size; x++) {
           for (int y=0; y<segm.size; y++) {
@@ -517,14 +519,21 @@ class GlicCodecReader {
       }
     } 
     catch(EOFException e) {
+      println("decode packed failed (EOF)");
+      // ignore
+    } 
+    catch(IOException e) {
+      println("decode packed failed (IO)");
       // ignore
     }
     catch(IllegalStateException e) {
+      println("decode packed failed");
       // ignore
     }
   }
 
-  void decode_rle(Planes p, int pno, ArrayList<Segment> s) throws IOException {
+  void decode_rle(Planes p, int pno, ArrayList<Segment> s) {
+    try {
     byte[] d = readArray(data_sizes[pno]);
     DefaultBitInput in = new DefaultBitInput(new ArrayByteInput(d, 0, d.length));
 
@@ -533,7 +542,7 @@ class GlicCodecReader {
     boolean do_read_type = true;
     int currentcnt = 0;
 
-    try {
+    
       for (Segment segm : s) {
         for (int x=0; x<segm.size; x++) {
           for (int y=0; y<segm.size; y++) {
@@ -555,9 +564,15 @@ class GlicCodecReader {
       }
     } 
     catch(EOFException e) {
+      println("decode rle failed (EOF)");
+      // ignore
+      } 
+    catch(IOException e) {
+      println("decode rle failed (IO)");
       // ignore
     }
     catch(IllegalStateException e) {
+      println("decode rle failed");
       // ignore
     }
   }
@@ -575,8 +590,14 @@ class GlicCodecReader {
     return 0;
   } 
 
-  void skip(int bytes) throws IOException {
-    for (int i=0; i<bytes; i++) o.readByte();
+  void skip(int bytes) {
+    try {
+      for (int i=0; i<bytes; i++) o.readByte();
+    } 
+    catch (IOException e) {
+      println("skip failed");
+      // ignore
+    }
   }
 
   void readFirstHeader() throws IOException {
