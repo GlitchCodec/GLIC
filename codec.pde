@@ -669,7 +669,7 @@ class GlicCodecReader {
       if (do_skip_header) {
         println(separate_channels_toggle);
         int pp = separate_channels_toggle ? p : 0;
-        prediction_method[p] = ccfg.prediction_method[pp];
+        prediction_method[p] = max(0,ccfg.prediction_method[pp]);
         quant_value[p] = ccfg.quantization_value[pp];
         clamp_method[p] = ccfg.clamp_method[pp];
 
