@@ -634,7 +634,9 @@ void fileSelected(File selection) {
   }
 }
 
+boolean resetting_buffer = false;
 void reset_buffer() {
+  resetting_buffer = true;
   if (current != null) { 
     float ratio = (float)current.width/(float)current.height;
     neww = ratio < 1.0 ? (int)(max_display_size * ratio) : max_display_size;
@@ -646,6 +648,7 @@ void reset_buffer() {
     buffer.image(current, 0, 0);
     buffer.endDraw();
   }
+  resetting_buffer = false;
 }
 
 void load_button() {

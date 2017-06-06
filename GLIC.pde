@@ -65,7 +65,7 @@ void setup() {
 
 void draw() {
   background(0);
-  if (current != null && buffer != null) {
+  if (buffer != null && !resetting_buffer) {
     image(buffer, posx, posy, neww, newh);
   }
 }
