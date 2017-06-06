@@ -570,6 +570,7 @@ void save_button() {
     println("Saving: " + fn);
     buffer.save(fn);
     save_filename.setText(get_next_filename());
+    println("Saved");
   }
 }
 
@@ -641,6 +642,9 @@ void reset_buffer() {
     posx = ratio < 1.0 ? (max_display_size-neww) / 2 : 0;
     posy = ratio < 1.0 ? 0 : (max_display_size-newh) / 2;
     buffer = createGraphics(current.width, current.height);
+    buffer.beginDraw();
+    buffer.image(current, 0, 0);
+    buffer.endDraw();
   }
 }
 

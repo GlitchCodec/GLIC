@@ -247,11 +247,13 @@ PImage encode(PImage img, String fname) {
     println(gcw.data_sizes);
 
     gcw.close();
-
+    
+    PImage rrr = planes.toImage();
+    
     println("FINISHED");
     println("");
-
-    return planes.toImage();
+    
+    return rrr;
   } 
   catch (Exception e) {
     println("Encoding failed");
@@ -534,15 +536,15 @@ class GlicCodecReader {
 
   void decode_rle(Planes p, int pno, ArrayList<Segment> s) {
     try {
-    byte[] d = readArray(data_sizes[pno]);
-    DefaultBitInput in = new DefaultBitInput(new ArrayByteInput(d, 0, d.length));
+      byte[] d = readArray(data_sizes[pno]);
+      DefaultBitInput in = new DefaultBitInput(new ArrayByteInput(d, 0, d.length));
 
-    int bits = (int)ceil(log(transform_scale[pno])/log(2.0));
-    int currentval = 0;
-    boolean do_read_type = true;
-    int currentcnt = 0;
+      int bits = (int)ceil(log(transform_scale[pno])/log(2.0));
+      int currentval = 0;
+      boolean do_read_type = true;
+      int currentcnt = 0;
 
-    
+
       for (Segment segm : s) {
         for (int x=0; x<segm.size; x++) {
           for (int y=0; y<segm.size; y++) {
@@ -566,7 +568,7 @@ class GlicCodecReader {
     catch(EOFException e) {
       println("decode rle failed (EOF)");
       // ignore
-      } 
+    } 
     catch(IOException e) {
       println("decode rle failed (IO)");
       // ignore
@@ -605,8 +607,8 @@ class GlicCodecReader {
     skip(4);
 
     // width, height
-    w = abs(o.readInt())%8192; // 4
-    h = abs(o.readInt())%8192; // 4
+    w = max(64,abs(o.readInt())%8192); // 4
+    h = max(64,abs(o.readInt())%8192); // 4
 
     // colorspace
     colorspace = o.readUnsignedByte(); // 1
