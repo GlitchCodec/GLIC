@@ -558,7 +558,7 @@ class GlicCodecReader {
             }
             p.set(pno, segm.x+x, segm.y+y, currentval);
             currentcnt--;
-            if (currentcnt == 0) {
+            if (currentcnt <= 0) {
               do_read_type = true;
             }
           }
@@ -798,6 +798,7 @@ class GlicCodecWriter {
       out.writeBoolean(false);
     } else {
       out.writeBoolean(true);
+      out.writeInt(true, 7, currentcnt-2);
     }
     emitPackedBits(out, pno, bits, currentval);
     out.align(1);
