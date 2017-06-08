@@ -485,9 +485,9 @@ void fromHashMap(HashMap<String, Object> m) {
   co_r.setValue((Float)m.get("color_outside_r"));
   co_g.setValue((Float)m.get("color_outside_g"));
   co_b.setValue((Float)m.get("color_outside_b"));
-  if(m.get("separate_channels") != null)
+  if (m.get("separate_channels") != null)
     separate_channels.setArrayValue((float[])m.get("separate_channels"));
-    else
+  else
     separate_channels.deactivate(0);
 
   for (int p=0; p<3; p++) {
@@ -502,7 +502,7 @@ void fromHashMap(HashMap<String, Object> m) {
       }
     }
   }
-  
+
   toggle_sep_chan();
 }
 
@@ -517,11 +517,18 @@ void keep_image() {
   img = current;
 }
 
+String session_prefix() {
+  if (do_skip_session) 
+    return "";
+  else
+    return "_" + session_id;
+}
+
 void encode_button() {
   readValues();
   if (!isBatch) {
-    println("Encoding: " + foldername+File.separator+glic_filename.getText());
-    result = encode(img, foldername+File.separator+glic_filename.getText());
+    println("Encoding: " + foldername+File.separator+filename+session_prefix()+File.separator+glic_filename.getText());
+    result = encode(img, foldername+File.separator+filename+session_prefix()+File.separator+glic_filename.getText());
     current = result;
     reset_buffer();
   } else {
@@ -542,8 +549,8 @@ void encode_button() {
 
 void decode_button() {
   if (!isBatch) {
-    println("Decoding: " + foldername+File.separator+glic_filename.getText());
-    result = decode(foldername+File.separator+glic_filename.getText());
+    println("Decoding: " + foldername+File.separator+filename+session_prefix()+File.separator+glic_filename.getText());
+    result = decode(foldername+File.separator+filename+session_prefix()+File.separator+glic_filename.getText());
     current = result;
     reset_buffer();
   } else {
@@ -564,9 +571,7 @@ void decode_button() {
 
 void save_button() {
   if (buffer != null) {
-    String sep = "";
-    if (!do_skip_session) sep = "_" + session_id;
-    String fn = foldername+File.separator+filename+sep+File.separator+save_filename.getText();
+    String fn = foldername+File.separator+filename+session_prefix()+File.separator+save_filename.getText();
     println("Saving: " + fn);
     buffer.save(fn);
     save_filename.setText(get_next_filename());
@@ -578,7 +583,7 @@ int filename_cnt = 0;
 String get_next_filename() {
   return filename+"_"+nf(filename_cnt++, 6)+".png";
 }
-
+ 
 void bbar_reset(String h) {
   for (String s : bbar_names) {
     if (h.equals(s)) {
@@ -590,17 +595,16 @@ void bbar_reset(String h) {
 }
 
 void new_session() {
-  String sep = "";
+
   if (!do_skip_session) {
     session_id = hex(sdf.format(new Date()).hashCode());
-    sep = "_" + session_id;
-    filename_cnt = 0;
     println("Session name: " + session_id);
   } else {
     session_id = "";
   }
+  filename_cnt = 0;
   save_filename.setText(get_next_filename());
-  glic_filename.setText(filename+sep+".glic");
+  glic_filename.setText(filename+".glic");
 }
 
 void fileSelected(File selection) {
@@ -657,16 +661,16 @@ void load_button() {
 
 void toggle_sep_chan() {
   if (separate_channels.getArrayValue()[0]==1) {
-      ch1.setLabel("Channel 1");
-      ch2.setVisible(true);
-      ch3.setVisible(true);
-      separate_channels_toggle = true;
-    } else {
-      ch1.setLabel("All channels");
-      ch2.setVisible(false);
-      ch3.setVisible(false);
-      separate_channels_toggle = false;
-    }
+    ch1.setLabel("Channel 1");
+    ch2.setVisible(true);
+    ch3.setVisible(true);
+    separate_channels_toggle = true;
+  } else {
+    ch1.setLabel("All channels");
+    ch2.setVisible(false);
+    ch3.setVisible(false);
+    separate_channels_toggle = false;
+  }
 }
 
 void controlEvent(ControlEvent e) {
