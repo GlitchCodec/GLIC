@@ -33,7 +33,8 @@ String session_id;
 final static int max_display_size = 750;
 
 //////
-PImage orig, img, result, isegm, ipred;
+PImage img, result, isegm, ipred;
+String origname;
 
 PImage current;
 int neww, newh, posx=0, posy=0;

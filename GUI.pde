@@ -93,9 +93,15 @@ void gui() {
 
   lbutton = cp5.addButton("load_button")
     .setPosition(10, 220)
-      .setSize(180, 20)
+      .setSize(120, 20)
         .setLabel("LOAD IMAGE (ctrl-l)")
           .moveTo(global);
+          
+  cp5.addButton("reload_image")
+    .setPosition(140, 220)
+      .setSize(50,20)
+        .setLabel("RELOAD")
+          .moveTo(global);          
 
   ebutton = cp5.addButton("encode_button")
     .setPosition(10, 250)
@@ -145,15 +151,9 @@ void gui() {
         .addItems(bbar_names)
           .moveTo(global);
 
-  cp5.addButton("reset_image")
-    .setPosition(10, 470)
-      .setWidth(89)
-        .setLabel("RESET IMAGE")
-          .moveTo(global);
-
   cp5.addButton("keep_image")
-    .setPosition(101, 470)
-      .setWidth(89)
+    .setPosition(10, 470)
+      .setWidth(180)
         .setLabel("KEEP IMAGE")
           .moveTo(global);
 
@@ -506,9 +506,9 @@ void fromHashMap(HashMap<String, Object> m) {
   toggle_sep_chan();
 }
 
-void reset_image() {
-  println("Reset image done");
-  img = current = orig;
+void reload_image() {
+  println("Reload image done");
+  load_image(origname);
   ipred = isegm = null;
   reset_buffer();
 }
@@ -607,6 +607,27 @@ void new_session() {
   glic_filename.setText(filename+".glic");
 }
 
+void load_image(String fname) {
+  println("Loading file: " + fname);
+
+    if ("jpg".equals(fileext)
+      || "jpeg".equals(fileext)
+      || "gif".equals(fileext)
+      || "png".equals(fileext)
+      || "bmp".equals(fileext)) {
+      img = loadImage(fname);
+      bbar_reset("Image");
+    } else {
+      result = img = decode(fname);
+      bbar_reset("Result");
+    }
+
+    new_session();
+
+    current = img;
+    reset_buffer();
+}
+
 void fileSelected(File selection) {
   if (selection != null) {
     current = null;
@@ -617,24 +638,9 @@ void fileSelected(File selection) {
     filename = fn.substring(0, i);
     foldername = selection.getParent();
 
-    println("Loading file: " + selection.getAbsolutePath());
-
-    if ("jpg".equals(fileext)
-      || "jpeg".equals(fileext)
-      || "gif".equals(fileext)
-      || "png".equals(fileext)
-      || "bmp".equals(fileext)) {
-      orig = img = loadImage(selection.getAbsolutePath());
-      bbar_reset("Image");
-    } else {
-      orig = result = img = decode(selection.getAbsolutePath());
-      bbar_reset("Result");
-    }
-
-    new_session();
-
-    current = img;
-    reset_buffer();
+    origname = selection.getAbsolutePath();
+    load_image(origname);
+     
   }
 }
 
