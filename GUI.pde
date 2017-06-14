@@ -424,7 +424,7 @@ void updatePresets() {
   java.io.File folder = new java.io.File(sketchPath("presets"));
   filenames = folder.list();
   if (filenames != null) {
-    presets_list.clear();
+    presets_list.clear(); 
     for (String s : sort (filenames)) {
       presets_list.addItem(s, s);
     }
