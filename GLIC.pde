@@ -62,7 +62,7 @@ void setup() {
   println("Press CTRL-D to decode image");
   println("Press CTRL-S to save image");
   println();
-  println("Presets provided by: Saturn Kat, Letsglitchit, Vivi, NoNoNoNoNo, Pandy Chan, GenerateMe.");
+  println("Presets provided by: Myrto, Saturn Kat, Letsglitchit, Vivi, NoNoNoNoNo, Pandy Chan, GenerateMe.");
   println();
 }
 
