@@ -2,6 +2,11 @@
 
 //////////////////// Config
 
+// Hidden stuff (not in GUI)
+
+// Press CTRL-I to iterate [encoding -> keep image...] `iterate_count` times.
+int iterate_count = 5;
+
 // batch stuff
 import java.util.ArrayList.*;
 import java.io.*;
@@ -93,6 +98,14 @@ void keyPressed() {
       decode_button();
     } else if (char(keyCode) == 'E') {
       encode_button();
+    } else if (char(keyCode) == 'I') {
+      println("***** ITERATING ENCODING " + iterate_count + " times!");
+      println("be patient");
+      for(int i=0;i<iterate_count;i++) {
+        println("----------> Iteration number: "+i+"/"+iterate_count);
+        encode_button();
+        keep_image();
+      }
     }
   }
 }
