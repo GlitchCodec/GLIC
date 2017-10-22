@@ -508,7 +508,7 @@ void fromHashMap(HashMap<String, Object> m) {
 
 void reload_image() {
   println("Reload image done");
-  load_image(origname);
+  load_image(origname, false);
   ipred = isegm = null;
   reset_buffer();
 }
@@ -607,7 +607,7 @@ void new_session() {
   glic_filename.setText(filename+".glic");
 }
 
-void load_image(String fname) {
+void load_image(String fname, boolean reset_session) {
   println("Loading file: " + fname);
 
     if ("jpg".equals(fileext)
@@ -622,7 +622,7 @@ void load_image(String fname) {
       bbar_reset("Result");
     }
 
-    new_session();
+    if(reset_session) new_session();
 
     current = img;
     reset_buffer();
@@ -639,7 +639,7 @@ void fileSelected(File selection) {
     foldername = selection.getParent();
 
     origname = selection.getAbsolutePath();
-    load_image(origname);
+    load_image(origname, true);
      
   }
 }
