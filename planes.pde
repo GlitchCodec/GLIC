@@ -80,13 +80,14 @@ class Planes {
     this.cs = cs;
     ww = 1<<(int)ceil(log(w)/LOG2);
     hh = 1<<(int)ceil(log(h)/LOG2);
-    channels = new int[4][w][h];
+    //channels = new int[4][w][h];
+    channels = new int[3][w][h];
     for (int x=0; x<w; x++) {
       for (int y=0; y<h; y++) {
         channels[0][x][y] = ref.c[0];
         channels[1][x][y] = ref.c[1];
         channels[2][x][y] = ref.c[2];
-        channels[3][x][y] = ref.c[3];
+  //      channels[3][x][y] = ref.c[3];
       }
     }
     this.ref = ref;
@@ -107,7 +108,7 @@ class Planes {
         channels[2][x][y] = c & 0xff;
         channels[1][x][y] = (c >> 8) & 0xff;
         channels[0][x][y] = (c >> 16) & 0xff;
-        channels[3][x][y] = (c >> 24) & 0xff;
+    //    channels[3][x][y] = (c >> 24) & 0xff;
       }
     }
   }
@@ -120,7 +121,9 @@ class Planes {
         (channels[2][x][y] ) |
           ((channels[1][x][y] ) << 8) |
           ((channels[0][x][y] ) << 16) |
-          ((channels[3][x][y] ) << 24), cs);
+          0xff000000
+        //  ((channels[3][x][y] ) << 24)
+          , cs);
       }
     }
     return pxls;

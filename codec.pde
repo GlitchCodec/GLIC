@@ -102,7 +102,7 @@ PImage encode(PImage img, String fname) {
 
     // Segmentation is stored as quad tree encoded binary (1 - go deeper, 0 - leaf)
     // where to store all segments
-    ArrayList<Segment> segments[] = new ArrayList[4];
+    ArrayList<Segment> segments[] = new ArrayList[3];
 
     gcw.writeSegmentationMark();
     for (int p=0; p<3; p++) {
@@ -228,6 +228,7 @@ PImage encode(PImage img, String fname) {
     }
 
     ipred = planes_pred.toImage();
+    planes_pred=null;
 
     gcw.writePredictDataMark();
     // store another config, prediction additional info
