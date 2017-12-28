@@ -249,6 +249,7 @@ PImage encode(PImage img, String fname) {
 
     gcw.close();
     
+    result = null;
     PImage rrr = planes.toImage();
     
     println("FINISHED");
