@@ -4,6 +4,7 @@
 
 // Hidden stuff (not in GUI)
 
+// Press CTRL-Y to encode image with all presets
 // Press CTRL-I to iterate [encoding -> keep image...] `iterate_count` times.
 int iterate_count = 5;
 
@@ -101,10 +102,18 @@ void keyPressed() {
     } else if (char(keyCode) == 'I') {
       println("***** ITERATING ENCODING " + iterate_count + " times!");
       println("be patient");
-      for(int i=0;i<iterate_count;i++) {
+      for (int i=0; i<iterate_count; i++) {
         println("----------> Iteration number: "+i+"/"+iterate_count);
         encode_button();
         keep_image();
+      }
+    } else if (char(keyCode) == 'Y') {
+      if (img != null) {
+        for (int i=0; i<presets_count; i++) {
+          presets(i);
+          encode_button();
+          save_buffer(current_preset);
+        }
       }
     }
   }
@@ -113,3 +122,4 @@ void keyPressed() {
 void keyReleased() {
   if (keyCode == CONTROL) isCtrlPressed = false;
 }
+

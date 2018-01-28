@@ -26,6 +26,9 @@ HashMap<String, ControllerInterface>[] chmap = new HashMap[3];
 boolean separate_channels_toggle = false;
 boolean do_skip_session = false;
 
+int presets_count = 0;
+String current_preset = null;
+
 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 
 void gui() {
@@ -386,19 +389,21 @@ void image_switch(int v) {
 }
 
 void presets(int i) {
-  String s = (String)presets_list.getItem(i).get("text");
+  current_preset = (String)presets_list.getItem(i).get("text");
   try {
-    println("Loading preset: " + s);
-    ObjectInputStream ois = new ObjectInputStream(createInput("presets"+File.separator+s));
+    println("Loading preset: " + current_preset);
+    ObjectInputStream ois = new ObjectInputStream(createInput("presets"+File.separator+current_preset));
     HashMap<String, Object> map = (HashMap)ois.readObject();
     fromHashMap(map);
     ois.close();
   } 
   catch (IOException e) {
-    println("Failed to load preset: " + s);
+    println("Failed to load preset: " + current_preset);
+    current_preset = null;
   } 
   catch (ClassNotFoundException e) {
-    println("Failed to load preset: " + s);
+    println("Failed to load preset: " + current_preset);
+    current_preset = null;
   }
 }
 
@@ -429,6 +434,7 @@ void updatePresets() {
       presets_list.addItem(s, s);
     }
   }
+  presets_count = filenames.length;
 }
 
 void readValues() {
@@ -569,14 +575,19 @@ void decode_button() {
   bbar_reset("Result");
 }
 
-void save_button() {
+void save_buffer(String pref) {
   if (buffer != null) {
-    String fn = foldername+File.separator+filename+session_prefix()+File.separator+save_filename.getText();
+    String ppref = "".equals(pref) ? "" : (pref + "_");
+    String fn = foldername+File.separator+filename+session_prefix()+File.separator+ppref+save_filename.getText();
     println("Saving: " + fn);
     buffer.save(fn);
     save_filename.setText(get_next_filename());
     println("Saved");
   }
+}
+
+void save_button() {
+  save_buffer("");
 }
 
 int filename_cnt = 0;
