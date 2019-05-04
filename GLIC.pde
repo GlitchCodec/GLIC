@@ -67,6 +67,7 @@ void setup() {
   println("Press CTRL-E to encode image");
   println("Press CTRL-D to decode image");
   println("Press CTRL-S to save image");
+  println("Press CTRL-Y to apply all presets");
   println();
   println("Presets provided by: Myrto, Saturn Kat, Letsglitchit, Vivi, NoNoNoNoNo, Pandy Chan, GenerateMe, Jay Di, José Irion Neto.");
   println();
@@ -111,8 +112,13 @@ void keyPressed() {
       if (img != null) {
         for (int i=0; i<presets_count; i++) {
           presets(i);
-          encode_button();
-          save_buffer(current_preset);
+          if(isBatch) {
+            readValues();
+            encode_batch(true);
+          } else {
+            encode_button();
+            save_buffer(current_preset);
+          }
         }
       }
     }

@@ -99,10 +99,10 @@ void gui() {
       .setSize(120, 20)
         .setLabel("LOAD IMAGE (ctrl-l)")
           .moveTo(global);
-          
+
   cp5.addButton("reload_image")
     .setPosition(140, 220)
-      .setSize(50,20)
+      .setSize(50, 20)
         .setLabel("RELOAD")
           .moveTo(global);          
 
@@ -530,6 +530,24 @@ String session_prefix() {
     return "_" + session_id;
 }
 
+void encode_batch(boolean dopresets) {
+  println("batch: "+foldername);
+  java.io.File folder = new java.io.File(dataPath(foldername)); // set up a File object for the directory
+  filenames = folder.list(extfilter); // fill the fileNames string array with the filter result
+  curFrame = 0;
+  String preset_dir = dopresets ? File.separator + current_preset : "";
+  while (curFrame<filenames.length) {
+    String curr_name = foldername+File.separator+"batch"+session_prefix()+preset_dir+File.separator+filenames[curFrame];
+    println("Encoding: " + curr_name);
+    img = loadImage(foldername+File.separator+filenames[curFrame]);
+    result = encode(img, curr_name.replace(".png", "").replace(".jpg", "").replace(".jpeg", "").replace(".bmp", "")+".glic"); // todo: make filename without extension
+    result.save(curr_name);
+    current = result;
+    reset_buffer();
+    curFrame++;
+  }
+}
+
 void encode_button() {
   readValues();
   if (!isBatch) {
@@ -538,17 +556,7 @@ void encode_button() {
     current = result;
     reset_buffer();
   } else {
-    println("batch: "+foldername);
-    java.io.File folder = new java.io.File(dataPath(foldername)); // set up a File object for the directory
-    filenames = folder.list(extfilter); // fill the fileNames string array with the filter result
-    curFrame = 0;
-    while (curFrame<filenames.length) {
-      println("Encoding: " + foldername+File.separator+filenames[curFrame]);
-      img = loadImage(foldername+File.separator+filenames[curFrame]);
-      result = encode(img, foldername+File.separator+"glic"+File.separator+filenames[curFrame].replace(".png", "").replace(".jpg", "").replace(".jpeg", "").replace(".bmp", "")+".glic"); // todo: make filename without extension
-      current = result;
-      curFrame++;
-    }
+    encode_batch(false);
   }
   bbar_reset("Result");
 }
@@ -561,14 +569,16 @@ void decode_button() {
     reset_buffer();
   } else {
     println("Batch: "+foldername);
-    java.io.File folder = new java.io.File(dataPath(foldername)); // set up a File object for the directory
+    java.io.File folder = new java.io.File(dataPath(foldername)+File.separator + "batch" + session_prefix()); // set up a File object for the directory
     filenames = folder.list(glicfilter); // fill the fileNames string array with the filter result
     curFrame = 0;
     while (curFrame<filenames.length) {
-      println("Decoding: " + foldername+File.separator+filenames[curFrame]);
-      result = decode(foldername+File.separator+filenames[curFrame]);
-      result.save(foldername+File.separator+filenames[curFrame].replace(".glic", "")+".png");
+      String curr_name = foldername+File.separator+"batch"+session_prefix()+File.separator+filenames[curFrame];
+      println("Decoding: " + curr_name);
+      result = decode(curr_name);
+      result.save(curr_name.replace(".glic", "")+".png");
       current = result;
+      reset_buffer();
       curFrame++;
     }
   }
@@ -594,7 +604,7 @@ int filename_cnt = 0;
 String get_next_filename() {
   return filename+"_"+nf(filename_cnt++, 6)+".png";
 }
- 
+
 void bbar_reset(String h) {
   for (String s : bbar_names) {
     if (h.equals(s)) {
@@ -621,22 +631,22 @@ void new_session() {
 void load_image(String fname, boolean reset_session) {
   println("Loading file: " + fname);
 
-    if ("jpg".equals(fileext)
-      || "jpeg".equals(fileext)
-      || "gif".equals(fileext)
-      || "png".equals(fileext)
-      || "bmp".equals(fileext)) {
-      img = loadImage(fname);
-      bbar_reset("Image");
-    } else {
-      result = img = decode(fname);
-      bbar_reset("Result");
-    }
+  if ("jpg".equals(fileext)
+    || "jpeg".equals(fileext)
+    || "gif".equals(fileext)
+    || "png".equals(fileext)
+    || "bmp".equals(fileext)) {
+    img = loadImage(fname);
+    bbar_reset("Image");
+  } else {
+    result = img = decode(fname);
+    bbar_reset("Result");
+  }
 
-    if(reset_session) new_session();
+  if (reset_session) new_session();
 
-    current = img;
-    reset_buffer();
+  current = img;
+  reset_buffer();
 }
 
 void fileSelected(File selection) {
@@ -651,7 +661,6 @@ void fileSelected(File selection) {
 
     origname = selection.getAbsolutePath();
     load_image(origname, true);
-     
   }
 }
 
