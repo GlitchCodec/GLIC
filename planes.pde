@@ -118,11 +118,12 @@ class Planes {
     for (int x=0; x<w; x++) {
       for (int y=0; y<h; y++) {
         int off = y*w+x;
+	int alpha = img == null ? 0xff000000 : (img.pixels[off]&0xff000000);
         pxls[off] = fromColorspace(
         (channels[2][x][y] ) |
           ((channels[1][x][y] ) << 8) |
           ((channels[0][x][y] ) << 16) |
-          (img.pixels[off]&0xff000000)
+          alpha
         //  ((channels[3][x][y] ) << 24)
           , cs);
       }
